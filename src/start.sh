@@ -16,7 +16,7 @@ function log {
 exit_script() {
     log "shutting down start script"
 	if [[ -n "${PROXY+x}" ]]; then
-		log `/etc/init.d squid3 stop`
+		log `/etc/init.d/squid3 stop`
 	fi
     trap - SIGINT SIGTERM # clear the trap
     kill -- -$$ # Sends SIGTERM to child/sub processes
