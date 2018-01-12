@@ -2,7 +2,7 @@ FROM resin/%%RESIN_MACHINE_NAME%%-python:slim
 
 RUN apt-get update && apt-get install -yq --no-install-recommends \
     build-essential pkg-config libdbus-1-dev libdbus-glib-1-dev curl \
-    net-tools modemmanager logrotate squid3 && \
+    net-tools modemmanager logrotate squid3 iptables && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app

@@ -45,7 +45,7 @@ fi
 # Start Squid Transparent proxy if $PROXY variable is set
 if [[ -n "${PROXY+x}" ]]; then
 	# Start Squid Proxy
-	log `/etc/init.d squid3 start`
+	log `/etc/init.d/squid3 start`
 	# Make sure traffic is redirected to Squid
 	ls /sys/class/net | grep -q wlan0
 	if [[ $? -eq 0 ]]; then
