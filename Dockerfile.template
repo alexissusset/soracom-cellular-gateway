@@ -1,0 +1,33 @@
+FROM resin/%%RESIN_MACHINE_NAME%%-python:slim
+
+RUN apt-get update && apt-get install -yq --no-install-recommends \
+    build-essential pkg-config libdbus-1-dev libdbus-glib-1-dev curl \
+    net-tools modemmanager logrotate squid3 && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/src/app
+
+COPY src/entry.sh /usr/bin/entry.sh
+COPY src/start.sh /usr/src/app
+COPY src/reconnect.sh /usr/src/app
+COPY src/bashrc /root/.bashrc
+COPY src/soracom.py /usr/src/app
+COPY src/wifishare.py /usr/src/app
+COPY src/ethshare.py /usr/src/app
+COPY src/logrotate.conf /usr/src/app
+COPY src/squid3.conf /etc/squid3/squid.conf
+
+RUN chmod 777 /usr/src/app/start.sh
+RUN chmod 777 /usr/src/app/reconnect.sh
+RUN chmod 777 /usr/bin/entry.sh
+RUN pip install wheel
+RUN pip install requests
+RUN pip install python-networkmanager
+
+RUN systemctl disable ModemManager
+RUN systemctl mask ModemManager
+RUN systemctl disable udevd
+
+ENV INITSYSTEM off
+
+CMD ["bash", "/usr/src/app/start.sh"]
