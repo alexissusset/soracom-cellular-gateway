@@ -50,12 +50,12 @@ if [[ -n "${PROXY+x}" ]]; then
 	ls /sys/class/net | grep -q wlan0
 	if [[ $? -eq 0 ]]; then
 		log `iptables -t nat -A PREROUTING -i wlan0 -p tcp --dport 80 -j REDIRECT --to-port 3128`
-		log `iptables -t nat -A PREROUTING -i wlan0 -p tcp --dport 443 -j REDIRECT --to-port 3128`
+## Needs Squid SSL cert		log `iptables -t nat -A PREROUTING -i wlan0 -p tcp --dport 443 -j REDIRECT --to-port 3128`
 	fi
 	ls /sys/class/net | grep -q eth0
 	if [[ $? -eq 0 ]]; then
 		log `iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3128`
-		log `iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j REDIRECT --to-port 3128`
+## Needs Squid SSL cert		log `iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j REDIRECT --to-port 3128`
 	fi
 
 fi
