@@ -1,11 +1,28 @@
+FROM resin/%%RESIN_MACHINE_NAME%%-python as builder
+
+WORKDIR /usr/src/app
+
+RUN apt-get update && apt-get install -yq \
+    build-essential pkg-config libdbus-1-dev libdbus-glib-1-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install python modules
+RUN pip install wheel
+RUN pip install requests
+RUN pip install python-networkmanager
+
+# Base build completed
+# Deploying final App
 FROM resin/%%RESIN_MACHINE_NAME%%-python:slim
 
 RUN apt-get update && apt-get install -yq --no-install-recommends \
-    build-essential pkg-config libdbus-1-dev libdbus-glib-1-dev curl \
-    net-tools modemmanager logrotate squid3 iptables && \
+    net-tools curl modemmanager logrotate squid3 iptables watchdog && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
+
+# Copy files from builder container
+COPY --from=builder /usr/local/lib/python2.7/site-packages/ /usr/local/lib/python2.7/site-packages/
 
 COPY src/entry.sh /usr/bin/entry.sh
 COPY src/start.sh /usr/src/app
@@ -20,9 +37,6 @@ COPY src/squid3.conf /etc/squid3/squid.conf
 RUN chmod 777 /usr/src/app/start.sh
 RUN chmod 777 /usr/src/app/reconnect.sh
 RUN chmod 777 /usr/bin/entry.sh
-RUN pip install wheel
-RUN pip install requests
-RUN pip install python-networkmanager
 
 RUN systemctl disable ModemManager
 RUN systemctl mask ModemManager

@@ -29,6 +29,9 @@ else
 	echo "CONSOLE_LOGGING isn't set to 1, logging to /data/soracom.log"
 fi
 
+# Start Linux watchdog
+log "`service watchdog start`"
+
 # Add Soracom Network Manager connection
 log `python soracom.py`
 
